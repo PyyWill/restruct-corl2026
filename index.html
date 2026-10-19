@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>ReStruct</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%229%22 cy=%2216%22 r=%225%22 fill=%22none%22 stroke=%22%234D5A7A%22 stroke-width=%222.4%22/%3E%3Ccircle cx=%2224%22 cy=%2216%22 r=%225%22 fill=%22%234D5A7A%22/%3E%3Cpath d=%22M14 16h5%22 stroke=%22%234D5A7A%22 stroke-width=%222.4%22/%3E%3C/svg%3E">
+<meta name="description" content="ReStruct steers a learned robot policy at inference time by reconfiguring its state-machine task structure from a natural-language preference, without retraining.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caladea:ital,wght@0,400;0,700;1,400;1,700&family=Carlito:ital,wght@0,400;0,700;1,400&family=Tinos:ital@0;1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Math&amp;display=swap&amp;text=%20%28%29%2A%2B%2C-.0123456789%3A%3DABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5D_abcdefghijklmnopqrstuvwxyz%7C~%C2%AC%CF%80%CF%86%E1%B5%A6%E2%80%B2%E2%82%80%E2%82%81%E2%82%82%E2%82%83%E2%82%90%E2%84%B3%E2%86%92%E2%88%91%E2%88%A7%E2%88%A8%E2%8A%97%E2%96%A1%E2%97%87%F0%9D%90%9C%F0%9D%90%B4%F0%9D%91%90%F0%9D%91%96%F0%9D%91%97%F0%9D%91%9A%F0%9D%91%9E%F0%9D%91%BB%F0%9D%92%82%F0%9D%92%84%F0%9D%92%87%F0%9D%92%92%F0%9D%92%95%F0%9D%9C%8F%F0%9D%9D%89%F0%9D%9F%8E%F0%9D%9F%8F%F0%9D%9F%90%F0%9D%9F%91">
+<style>
+/* Layout follows the ENAP page: a fixed white header bar (logos left, links right) that overlaps the top of one white page card (1144px) on a cool ground; content sits in an 880px column inside the card. Serif (Cambria) headings, sans (Calibri-metric) text, left-aligned headings, prose justified across the full column. */
+:root {
+  --paper: #FFFFFF;
+  --ground: #F3F5F9;
+  --card: #F6F7FA;
+  --mist: #F4F5F8;
+  --line: #E4E7ED;
+  --line-2: #D3D8E2;
+  --ink: #1E2332;
+  --ink-2: #4A5266;
+  --ink-3: #7A8296;
+
+  --blue-8: #3A4664;
+  --blue-7: #4D5A7A;
+  --blue-5: #5C6F9E;
+  --blue-3: #A9B4CF;
+  --blue-1: #E9ECF3;
+  --blue-0: #F3F5F9;
+  --warm-7: #7D5D37;
+  --warm-5: #C1AA80;
+  --warm-3: #DCCBA9;
+  --warm-0: #F8F2E8;
+  --olive-7: #657252;
+  --olive-5: #798862;
+  --olive-1: #E9ECE4;
+  --olive-0: #F7F8F5;
+  --red-6: #B4523F;
+
+  --serif: "Cambria", "Caladea", "Georgia", "Times New Roman", serif;
+  --sans: "Carlito", "Calibri", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --math: "Cambria Math", "STIX Two Math", "Cambria", "Caladea", serif;
+  --mono: ui-monospace, "SFMono-Regular", "Consolas", "Menlo", monospace;
+
+  --step--1: 0.8125rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.1875rem;
+  --step-2: 1.375rem;
+  --step-3: 2.25rem;
+  --step-4: 3.5rem;
+
+  --col: 1144px;
+  --content: 880px;
+  --nav-h: 68px;
+  --radius: 10px;
+  --ease: cubic-bezier(.2,.7,.2,1);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 12px); }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  padding: 42px clamp(16px, 4vw, 36px) 40px;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--paper); }
+img, video, canvas, svg { max-width: 100%; }
+a { color: var(--blue-7); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--blue-8); }
+:focus-visible { outline: 2px solid var(--blue-5); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 700; text-wrap: balance; margin: 0; letter-spacing: -0.01em; text-align: left; }
+p { margin: 0; }
+.prose { text-align: justify; text-justify: inter-word; hyphens: manual; }
+.math { font-family: var(--math); font-style: normal; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.shell { display: block; max-width: var(--col); margin: 0 auto; padding: 0 clamp(20px, 4.5vw, 52px); background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 8px 40px rgba(30, 35, 50, .05); overflow: clip; }
+.wrap { max-width: var(--content); margin-inline: auto; padding-inline: 12px; }
+.band { padding-block: 44px; }
+.section-head { display: grid; gap: 8px; margin-bottom: 18px; }
+.section-head h2 { font-size: 1.7rem; line-height: 1.2; color: var(--blue-7); }
+.section-head p { color: var(--ink-2); font-size: 1.1rem; line-height: 1.6; }
+.head-tabs { grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 24px; }
+.head-tabs .ht { display: grid; gap: 8px; }
+.head-tabs .seg { justify-self: end; margin-bottom: 4px; }
+.note { font-size: var(--step--1); color: var(--ink-3); line-height: 1.5; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--sans); font-size: .75rem; letter-spacing: .02em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--ink-2); background: var(--paper); white-space: nowrap; }
+.extra { font-family: var(--sans); font-size: .78rem; color: var(--warm-7); }
+.pref { font-family: var(--serif); font-style: italic; color: var(--olive-7); }
+.pref::before { content: "\201C"; } .pref::after { content: "\201D"; }
+.foot { margin-top: 16px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px 20px; flex-wrap: wrap; }
+
+/* ---------- header bar ---------- */
+.nav { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 20; height: var(--nav-h); display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding-left: max(40px, env(safe-area-inset-left, 0px)); padding-right: max(40px, env(safe-area-inset-right, 0px));
+  background: var(--paper); border-bottom: 1px solid var(--line); box-shadow: 0 3px 15px rgba(30, 35, 50, .12); }
+.nav .logos { display: flex; align-items: center; gap: 14px; flex: none; }
+.nav .logos img { height: 47px; width: auto; display: block; }
+.nav ul { list-style: none; display: flex; gap: clamp(14px, 2.4vw, 30px); margin: 0; padding: 0; font-size: .98rem; overflow-x: auto; scrollbar-width: none; }
+.nav ul::-webkit-scrollbar { display: none; }
+.nav a.nl { color: var(--ink-2); text-decoration: none; white-space: nowrap; padding: 6px 0; letter-spacing: .01em; border-bottom: 1.5px solid transparent; transition: color .2s, border-color .2s; }
+.nav a.nl:hover, .nav a.nl.on { color: var(--ink); border-bottom-color: var(--blue-5); }
+
+/* ---------- hero ---------- */
+.hero { padding-block: 60px 28px; text-align: center; }
+.ptitle { font-size: 2.05rem; line-height: 1.3; color: var(--ink); text-align: center; letter-spacing: -.005em; margin-bottom: 20px; }
+.ptitle .ln { display: block; }
+.ptitle .key { font-style: italic; color: var(--blue-5); padding-inline: 0; background: linear-gradient(transparent 68%, var(--blue-1) 68%, var(--blue-1) 94%, transparent 94%); }
+.authors { font-size: 1.06rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 8px; margin-bottom: 8px; }
+.authors a { color: var(--ink); text-decoration: none; }
+.authors a:hover, .authors a:focus-visible { color: var(--ink); text-decoration: underline; }
+.authors sup { font-size: .7em; line-height: 0; vertical-align: .55em; color: var(--ink-2); margin-left: 1px; }
+.affil { color: var(--ink-2); font-size: .98rem; margin-bottom: 12px; }
+.links { margin-top: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 20px; border-radius: 8px; font-size: .95rem; font-weight: 700; line-height: 1.2; text-decoration: none; color: var(--ink); background: var(--blue-1); border: 0; box-shadow: 0 1px 2px rgba(30,35,50,.06); transition: background .2s, color .2s, box-shadow .2s; }
+.btn:hover { color: var(--ink); background: #DDE2EC; box-shadow: 0 1px 4px rgba(30,35,50,.08); }
+.btn.ghost { background: var(--blue-1); }
+.btn[aria-disabled="true"] { color: var(--ink-3); background: var(--card); font-weight: 400; cursor: default; box-shadow: none; }
+.btn svg { width: 16px; height: 16px; }
+.venue { display: inline-block; margin: 0 0 20px; padding: 5px 18px; border-radius: 999px; background: var(--blue-1); color: var(--blue-8); font-size: .92rem; font-weight: 700; letter-spacing: .02em; }
+.bib { position: relative; border: 1px solid var(--line); border-radius: 10px; background: var(--card); padding: 18px 22px; overflow-x: auto; }
+.bib pre { margin: 0; padding-right: 64px; font-family: var(--mono); font-size: .86rem; line-height: 1.6; color: var(--ink); white-space: pre-wrap; word-break: break-word; }
+.bib-copy { position: absolute; top: 10px; right: 10px; border: 1px solid var(--line-2); background: var(--paper); color: var(--ink-2); border-radius: 8px; padding: 4px 12px; font: 600 .8rem var(--sans); cursor: pointer; }
+.bib-copy:hover { color: var(--ink); border-color: var(--blue-3); }
+
+/* segmented tabs */
+.seg { display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); flex-wrap: wrap; justify-self: start; }
+.seg button { font-family: var(--sans); font-size: .95rem; border: 0; background: transparent; color: var(--ink-2); padding: 6px 14px; border-radius: 999px; cursor: pointer; transition: background .25s, color .25s; }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--blue-7); color: var(--paper); }
+
+/* teaser: videos first; a warm panel for the base policy, a blue one for the steered policy, caption below */
+.teaser { padding-bottom: 4px; }
+.tz { display: grid; grid-template-columns: minmax(0, 1.97fr) minmax(0, 1fr); column-gap: 16px; }
+.tz-panel { position: relative; padding: 6px; border-radius: 14px; min-width: 0; }
+.tz-base { background: var(--warm-0); border: 1px solid #EBDFC9; }
+.tz-steer { background: #EEF1F8; border: 1px solid #CDD5E6; }
+.tz-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
+.tz-v { margin: 0; min-width: 0; }
+.tz-chip { position: absolute; z-index: 2; top: 14px; left: 14px; display: inline-flex; align-items: center; gap: 6px; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; box-shadow: 0 1px 4px rgba(30, 35, 50, .12); }
+.tz-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.tz-base .tz-chip { color: var(--warm-7); background: #F6EEDF; }
+.tz-steer .tz-chip { color: #fff; background: var(--blue-7); }
+.tz-steer .vframe { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--blue-5); }
+.tz-cap { margin-top: 12px; text-align: center; color: var(--ink-2); font-size: 1rem; }
+.tz-cap strong { color: var(--ink); }
+.vframe { position: relative; border-radius: 12px; overflow: hidden; background: #e9eaee; aspect-ratio: 1080 / 1280; }
+.vframe video { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* 4:3 crop of the lower frame: keeps gripper, cans and bowls; drops the wall, the burned-in state badge and speed mark */
+.vframe.wide { aspect-ratio: 4 / 3; border-radius: 9px; }
+.vframe.wide video { object-position: 50% 78%; }
+.vframe .spd { position: absolute; right: 8px; bottom: 6px; font-size: .72rem; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, .6); }
+.trace { display: block; width: 100%; height: auto; }
+
+/* ---------- idea ---------- */
+.takeaways { display: grid; gap: 10px; }
+.takeaway { display: block; padding: 12px 18px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); color: inherit; text-decoration: none; transition: border-color .25s; }
+.takeaway:hover { border-color: var(--blue-3); color: inherit; }
+.takeaway p { color: var(--ink-2); font-size: 1.0625rem; line-height: 1.6; }
+.takeaway b { color: var(--ink); font-weight: 700; }
+.abstract { margin-top: 16px; }
+.abstract summary { font-family: var(--sans); cursor: pointer; color: var(--ink-2); list-style: none; display: inline-flex; gap: 8px; align-items: center; }
+.abstract summary::-webkit-details-marker { display: none; }
+.abstract summary::before { content: "+"; display: inline-grid; place-items: center; width: 20px; height: 20px; border: 1px solid var(--line-2); border-radius: 50%; font-size: .9rem; }
+.abstract[open] summary::before { content: "\2212"; }
+.abstract p { margin-top: 10px; color: var(--ink-2); line-height: 1.62; }
+/* preliminary: ENAP, collapsible and compact */
+.prelim { margin-top: 22px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+.prelim summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 12px 40px 12px 18px; position: relative; }
+.prelim summary::-webkit-details-marker { display: none; }
+.pl-title { font-family: var(--serif); font-weight: 700; font-size: 1.15rem; color: var(--blue-7); }
+.pl-tag { white-space: nowrap; font-size: .76rem; font-weight: 700; letter-spacing: .04em; color: var(--blue-8); background: var(--blue-1); padding: 2px 9px; border-radius: 999px; }
+.pl-link { font-size: .88rem; color: var(--blue-7); text-decoration: none; white-space: nowrap; }
+.pl-link:hover { text-decoration: underline; }
+.pl-chev { position: absolute; right: 18px; top: 50%; margin-top: -4px; width: 9px; height: 9px; border-right: 1.6px solid var(--ink-3); border-bottom: 1.6px solid var(--ink-3); transform: rotate(45deg) translateY(-3px); transition: transform .2s; }
+.prelim:not([open]) .pl-chev { transform: rotate(-45deg); }
+.pl-body { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 22px; align-items: center; padding: 2px 18px 16px; }
+.pl-fig { margin: 0; }
+.pl-fig svg { width: 100%; height: auto; display: block; }
+.pl-text { margin: 0; color: var(--ink-2); font-size: .98rem; line-height: 1.6; }
+.pl-text b { color: var(--ink); }
+
+/* ---------- paper figures (Fig. 1, Fig. 3) ---------- */
+.fig-tabs { margin-bottom: 2px; }
+.pfig { margin: 12px 0 0; }
+.pfig svg { width: 100%; height: auto; display: block; }
+.fig1 { aspect-ratio: 3378 / 843; }
+/* method stage: the paper figure (Overview) and the running example share one fixed-size frame */
+.mstage { position: relative; aspect-ratio: 3311 / 1638; }
+.ms-paper svg { width: 100%; height: auto; display: block; }
+.ms-paper, .fig1 { position: relative; }
+.fig-top { position: absolute; inset: 0; pointer-events: none; }
+.fig-top svg { width: 100%; height: auto; display: block; }
+.ex-wrap { margin-top: 12px; aspect-ratio: 1000 / 280; border-radius: 14px; border: 1px solid var(--line); background: var(--card); transition: background-color .5s, border-color .5s; }
+.ex-wrap.mode-base { --acc: #787169; --acc-ink: #787169; --acc-soft: #EFE6D6; --acc-line: #CFC5B6; background: #F8F2E8; border-color: #E6D9C2; }
+.ex-wrap.mode-prod { --acc: #425072; --acc-ink: #425072; --acc-soft: #DEE2EC; --acc-line: #ADB7CE; background: #EEF1F7; border-color: #C6CDDD; }
+.ex-wrap.mode-steer { --acc: #50583C; --acc-ink: #50583C; --acc-soft: #DCE1D2; --acc-line: #B6BDA6; background: #EEF0EA; border-color: #D0D6C6; }
+.ex { width: 100%; height: 100%; display: block; font-family: var(--sans); }
+.ex svg.dim { opacity: .32; transition: opacity .4s; }
+.ex .g-edge text { fill: var(--acc-ink); }
+.ex .g-edge.kept path { stroke: var(--acc); stroke-width: 2.4; }
+.ex .g-edge.kept text { font-weight: 700; }
+.ex .g-node.kept .body { fill: var(--acc-soft); stroke-width: 2; }
+.ex .g-edge.vanish, .ex .g-node.vanish { opacity: 0; transition: opacity .9s ease; }
+.ex .g-edge.flag path { stroke: var(--red-6); stroke-width: 2.2; }
+.ex .g-edge.flag text { fill: var(--red-6); font-weight: 700; }
+.ex .g-node.bad .body { fill: var(--red-6); stroke: var(--red-6); }
+.ex .g-node.bad text { fill: #fff; }
+.ex-name { font-family: var(--serif); font-weight: 700; font-size: 17px; fill: var(--ink); }
+.ex-big { font-family: var(--serif); font-weight: 700; font-size: 22px; }
+.ex-op { font-family: var(--math); font-size: 40px; fill: var(--ink-2); }
+.ex-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .08em; fill: var(--acc, var(--ink-3)); }
+.ex-chip { opacity: 0; transition: opacity .4s; }
+.ex-chip.on { opacity: 1; }
+.ex-chip rect { fill: var(--olive-0); stroke: var(--olive-5); }
+.ex-chip text, .ex-pref { font-family: var(--serif); font-style: italic; font-size: 15px; fill: var(--olive-7); }
+.ex-pref.lg { font-size: 18px; }
+.ex-pref.xl { font-size: 20px; }
+.ex-sym-k.lg { font-size: 16px; }
+.ex-hit.lg { font-size: 15px; }
+.ex-formula.lg { font-size: 32px; }
+.ex-pill { fill: var(--olive-0); stroke: var(--olive-5); }
+.ex-t { font-size: 14px; fill: var(--ink-2); }
+.ex-t.b { font-weight: 700; fill: var(--ink); }
+.ex-small { font-size: 13px; fill: var(--ink-3); }
+.ex-note { font-size: 15px; fill: var(--ink-2); }
+.ex-note .b { font-weight: 700; fill: var(--ink); }
+.ex-note .yes { fill: var(--acc); } .ex-note .no { fill: var(--red-6); }
+.ex-frame { fill: none; stroke: rgba(30, 35, 50, .12); stroke-width: 1; transition: stroke .25s, stroke-width .25s; }
+.ex-sym { transition: opacity .3s; }
+.ex-sym-k { font-family: var(--serif); font-weight: 700; font-size: 14px; fill: var(--ink); }
+.ex-sym-t { font-size: 13px; fill: var(--ink-2); }
+.ex-sym.on .ex-frame { stroke: var(--acc); stroke-width: 3; }
+.ex-sym.on .ex-sym-k { fill: var(--acc); }
+.ex-sym.struck { opacity: .45; }
+.ex-sym.struck .ex-sym-t, .ex-sym.struck .ex-sym-k { text-decoration: line-through; fill: var(--red-6); }
+.ex-sym.hit .ex-frame { stroke: var(--red-6); stroke-width: 3; }
+.ex-sym.hit .ex-sym-k, .ex-hit { fill: var(--red-6); font-weight: 700; font-size: 13.5px; }
+.ex-arrow { stroke: var(--ink-3); stroke-width: 1.4; fill: none; }
+.ex-box { fill: #fff; stroke: #425072; stroke-width: 1.2; }
+.ex-formula { font-family: var(--math); font-size: 26px; fill: #425072; }
+.ex-auto { fill: none; stroke: #425072; stroke-width: 1.6; }
+.ex-auto-t { font-family: var(--serif); fill: #425072; }
+circle.ex-auto { fill: #fff; } circle.ex-auto.inner { fill: none; }
+.ex-cutline { stroke: var(--red-6); stroke-width: 1.8; stroke-dasharray: 5 4; }
+.ex-gone { fill: #fff; stroke: var(--acc); opacity: .25; }
+.ex-count { font-size: 15px; fill: var(--ink-2); }
+.ex-num { font-family: var(--serif); font-weight: 700; font-size: 22px; fill: var(--acc); }
+.ex-badge { font-size: 13.5px; font-weight: 700; }
+.ex-badge.yes { fill: var(--acc); } .ex-badge.no { fill: var(--red-6); }
+.ex-fr { transition: opacity .3s; }
+.ex-fr.todo { opacity: .3; }
+.ex-fr.now .ex-frame { stroke: var(--acc); stroke-width: 3; }
+.ex-fr.bad .ex-frame { stroke: var(--red-6); stroke-width: 3; }
+.ex-fr.bad .ex-sym-k { fill: var(--red-6); }
+.fig-cap { margin-top: 12px; display: grid; gap: 6px; align-content: start; }
+.fig-cap p { color: var(--ink-2); font-size: 1.0625rem; line-height: 1.62; text-align: justify; }
+.fig-cap b { color: var(--ink); font-weight: 700; }
+.fig-cap code { font-family: var(--mono); font-size: .86em; color: var(--blue-8); }
+.stage { position: relative; border-radius: 6px; overflow: hidden; background: var(--mist); aspect-ratio: 4 / 3; }
+.stage canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+.stage canvas:active { cursor: grabbing; }
+.stage .hud { position: absolute; left: 8px; top: 8px; display: flex; gap: 6px; flex-wrap: wrap; pointer-events: none; }
+.stage .hud .tag { background: rgba(252,252,253,.92); }
+.stage .loading { position: absolute; inset: 0; display: grid; place-items: center; font-size: .9rem; color: var(--ink-3); }
+.legend-row { display: flex; gap: 14px; flex-wrap: wrap; font-size: .82rem; color: var(--ink-2); }
+.legend-row i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.legend-row svg { width: 12px; height: 12px; display: inline-block; }
+.legend-row i.sq { border-radius: 2px; }
+.chart .pref-line { min-height: 1.5em; }
+.bar-g { outline: none; }
+.bar-g:focus-visible rect:first-child { stroke: var(--blue-5); }
+
+
+/* ---------- playground ---------- */
+/* both columns stretch to one height, fixed by design on the right; the symbols card fills the left */
+.play { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(14px, 2vw, 20px); align-items: stretch; }
+.play-left, .play-right { display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; }
+.play .stage { flex: none; }
+.play .sym-card { flex: 1 1 0; display: flex; flex-direction: column; min-height: 0; contain: size; }   /* takes the height the right column leaves */
+.play .prefbox { flex: none; }
+.play .stage { aspect-ratio: 4 / 3; border: 1px solid var(--line); }
+.card { border: 1px solid var(--line); border-radius: 8px; background: var(--card); padding: 14px; min-width: 0; }
+.card h4 { margin-bottom: 10px; font-family: var(--sans); font-weight: 700; font-size: .76rem; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
+.prefbox { display: grid; gap: 10px; }
+.prefbox h4 { margin-bottom: 0; }
+.prefinput { display: flex; gap: 8px; }
+.prefinput input { flex: 1; min-width: 0; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--paper); font-family: var(--serif); font-size: 1rem; color: var(--ink); }
+.prefinput input:focus { outline: none; border-color: var(--blue-5); box-shadow: 0 0 0 3px var(--blue-1); }
+.prefinput button { height: 40px; padding: 0 16px; border-radius: 999px; border: 0; background: var(--blue-7); color: var(--paper); font-family: var(--sans); font-size: .95rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.prefinput button:hover { background: var(--blue-5); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; min-height: 101px; }
+.chip { font-family: var(--serif); font-size: .93rem; border: 1px solid var(--line-2); background: var(--paper); color: var(--ink-2); padding: 3px 11px; border-radius: 999px; cursor: pointer; transition: border-color .2s, background .2s, color .2s; }
+.chip:hover { border-color: var(--olive-5); color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--olive-0); border-color: var(--olive-5); color: var(--olive-7); }
+.chip.base[aria-pressed="true"] { background: var(--warm-0); border-color: var(--warm-5); color: var(--warm-7); }
+.match-msg { font-size: .82rem; color: var(--ink-3); min-height: 1.2em; }
+.match-msg.warn { color: var(--red-6); }
+.explain { font-size: .92rem; color: var(--ink-2); line-height: 1.45; min-height: 1.45em; margin: 0 0 4px; }
+.explain b { color: var(--ink); font-weight: 700; }
+.explain .math { color: var(--olive-7); }
+.graphbox svg { width: 100%; height: auto; display: block; overflow: visible; }
+/* automaton card stack: base / preference automaton / steered; palettes follow the paper's Fig. 3
+   (base skeleton: warm gray on beige; automaton and product: navy on blue; steered policy: olive on green-gray) */
+.am-stack { display: flex; flex-direction: column; min-height: 0; }
+.am-box { position: relative; z-index: 3; flex: 1; display: grid; grid-template-rows: auto auto 1fr; gap: 6px; padding: 14px; border: 1px solid; border-radius: 12px; box-shadow: 0 6px 14px -10px rgba(30, 35, 50, .35); transition: background-color .5s, border-color .5s; }
+.am-box.mode-base { --acc: #787169; --acc-ink: #787169; --acc-soft: #EFE6D6; --acc-line: #CFC5B6; background: #F8F2E8; border-color: #E6D9C2; }
+.am-box.mode-pref { --acc: #425072; --acc-ink: #425072; --acc-soft: #DEE2EC; --acc-line: #ADB7CE; background: #E9ECF3; border-color: #C6CDDD; }
+.am-box.mode-steer { --acc: #50583C; --acc-ink: #50583C; --acc-soft: #DCE1D2; --acc-line: #B6BDA6; background: #EEF0EA; border-color: #D0D6C6; }
+.am-title { margin: 0; color: var(--acc) !important; transition: color .4s; }
+.am-box .explain { height: 2.9em; margin: 0; overflow: hidden; }
+.am-box .explain .math { color: var(--acc-ink); line-height: 1; }
+.am-box .graphbox { aspect-ratio: 460 / 232; display: grid; place-items: center; min-height: 0; }
+.am-box .graphbox[hidden] { display: none; }
+.am-box .graphbox > svg { max-height: 100%; }
+.am-box .g-edge text { fill: var(--acc-ink); }
+.am-box .g-edge:not(.walked) text { opacity: .8; }
+/* earlier / later stages peek out below the card */
+.peek { position: relative; flex: none; height: 28px; margin-top: -15px; padding: 0 0 4px; display: flex; align-items: flex-end; justify-content: center; border: 1px solid; border-radius: 0 0 12px 12px; font: 700 .62rem/1 var(--sans); letter-spacing: .07em; text-transform: uppercase; color: transparent; cursor: pointer; transition: transform .22s var(--ease), color .2s; }
+#peek-1 { z-index: 2; margin-inline: 7px; box-shadow: 0 4px 8px -6px rgba(30, 35, 50, .3); }
+#peek-2 { z-index: 1; margin-inline: 14px; }
+.peek.st-base { background: #F3EADB; border-color: #E2D3B8; --pk: #787169; }
+.peek.st-pref { background: #DEE2EC; border-color: #C6CDDD; --pk: #425072; }
+.peek.st-steer { background: #E4E8DD; border-color: #CDD4C1; --pk: #50583C; }
+.peek.off { background: #EFF0F3; border-color: #E1E4EA; cursor: default; }
+.peek:not(:disabled):hover, .peek:not(:disabled):focus-visible { transform: translateY(9px); color: var(--pk); }
+.pop { animation: am-pop .55s var(--ease); transform-origin: 50% 50%; }
+@keyframes am-pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+/* learned symbols: thumbnail + VLM caption */
+.alpha { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); gap: 8px 14px; }
+.alpha figure { margin: 0; display: flex; align-items: center; gap: 10px; min-height: 0; height: 100%; transition: opacity .3s; }
+.alpha figure[hidden] { display: none; }
+.alpha img { flex: none; height: min(100%, 84px); min-height: 36px; width: auto; aspect-ratio: 1; border-radius: 7px; object-fit: cover; border: 2px solid transparent; transition: border-color .2s, opacity .3s; }
+.alpha figcaption { font-size: .86rem; line-height: 1.3; color: var(--ink-2); min-width: 0; }
+.alpha figcaption b { font-family: var(--serif); font-weight: 700; color: var(--ink); font-size: .9rem; margin-right: 5px; }
+.alpha figure.on img { border-color: var(--blue-5); }
+.alpha figure.on figcaption b { color: var(--blue-7); }
+.alpha figure.forbid img { opacity: .35; }
+.alpha figure.forbid figcaption { color: var(--red-6); text-decoration: line-through; }
+.alpha figure.forbid figcaption b { color: var(--red-6); }
+.alpha figure.split figcaption b { color: var(--olive-7); }
+.dfa svg, .pool svg { width: 100%; height: auto; display: block; }
+.pool .cap, .dfa .cap { font-size: .78rem; color: var(--ink-3); margin-top: 4px; }
+
+/* ---------- reuse ---------- */
+.reuse-a { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: clamp(18px, 3vw, 36px); align-items: center; }
+.reuse-a .txt { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.reuse-a h3, .reuse-b h3 { font-size: 1.2rem; line-height: 1.25; }
+.reuse-a p.lead, .reuse-b p.lead { color: var(--ink-2); line-height: 1.6; }
+/* CALVIN: results (left) and skill graph (right) in two equal-height panels, caption below */
+.reuse-b { margin-top: 40px; display: grid; gap: 12px; }
+.rb-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(14px, 2vw, 20px); align-items: stretch; }
+.rb-panel { border: 1px solid var(--line); border-radius: 10px; background: var(--card); padding: 14px; min-width: 0; }
+.trip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.trip .vframe { border-radius: 10px; }
+.trip figcaption { font-size: .8rem; color: var(--ink-2); margin-top: 6px; line-height: 1.35; }
+.trip figure { margin: 0; min-width: 0; cursor: pointer; }
+.trip figure:not(.on) .vframe { opacity: .78; transition: opacity .25s; }
+.trip figure.on .vframe { box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--blue-5); }
+.rb-panel.calvin-graph { display: grid; place-items: center; }
+.calvin-graph svg { width: 100%; max-width: 400px; height: auto; display: block; margin: 0 auto; overflow: visible; }
+
+/* ---------- results ---------- */
+.chart-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(20px, 3vw, 36px); align-items: start; }
+/* the two result charts share row tracks, so title, tabs, chart and legend line up and both end level */
+.chart-grid > .chart { grid-row: span 6; grid-template-rows: subgrid; row-gap: 10px; }
+.chart { display: grid; gap: 10px; min-width: 0; align-content: start; min-height: 120px; }
+.chart h3 { font-size: 1.2rem; line-height: 1.25; }
+.chart p.cap { color: var(--ink-2); font-size: .95rem; line-height: 1.5; }
+.chart > svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart .seg button { font-size: .82rem; padding: 4px 8px; }
+.tooltip { position: fixed; z-index: 50; pointer-events: none; background: var(--ink); color: var(--paper); font-size: .82rem; line-height: 1.35; padding: 8px 10px; border-radius: 8px; opacity: 0; transition: opacity .15s; max-width: 240px; }
+.tooltip.on { opacity: 1; }
+.tooltip b { font-size: 1rem; }
+.tables { margin-top: 28px; }
+.tables summary { cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: var(--serif); font-weight: 700; font-size: 1.2rem; color: var(--ink); list-style: none; }
+.tables summary::-webkit-details-marker { display: none; }
+.tables summary::after { content: ""; width: 7px; height: 7px; border-right: 1.6px solid var(--ink-3); border-bottom: 1.6px solid var(--ink-3); transform: rotate(45deg) translateY(-3px); transition: transform .2s; }
+.tables:not([open]) summary::after { transform: rotate(-45deg); }
+.tbl { overflow-x: auto; margin-top: 16px; }
+.tbl table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 640px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--paper);
+  font-family: var(--serif); font-size: .9rem; font-variant-numeric: lining-nums tabular-nums; }
+.tbl caption { text-align: left; font-family: var(--sans); font-size: .9rem; color: var(--ink-2); padding-bottom: 6px; caption-side: top; }
+.tbl thead th { background: var(--card); color: var(--ink); font-family: var(--sans); font-weight: 700; font-size: .74rem; letter-spacing: .02em; padding: 7px 8px; text-align: center; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl thead tr:first-child th { border-bottom-color: transparent; padding-bottom: 0; }
+.tbl thead tr:first-child th[colspan] { border-left: 1px solid var(--line); }
+.tbl tbody td { padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--line); white-space: nowrap; color: var(--ink-2); }
+.tbl tbody tr:last-child td { border-bottom: 0; }
+.tbl th:first-child, .tbl td:first-child { text-align: left; font-family: var(--sans); font-weight: 700; color: var(--ink); }
+.tbl td.g0 { border-left: 1px solid var(--line); }
+.tbl td.best { font-weight: 700; color: var(--ink); }
+.tbl tr.ours td { background: var(--blue-0); color: var(--blue-8); }
+.tbl tr.ours td.best { color: var(--blue-8); }
+footer { max-width: var(--col); margin: 0 auto; padding: 28px 16px 0; color: var(--ink-3); font-size: .85rem; text-align: center; }
+
+/* ---------- state-machine graphs ---------- */
+svg.pmm { overflow: visible; }
+.pmm .mk { fill: var(--acc-line, var(--blue-3)); } .pmm .mk-hot { fill: var(--acc, var(--blue-7)); } .pmm .mk-cut { fill: var(--red-6); }
+.g-edge path { fill: none; stroke: var(--acc-line, var(--blue-3)); stroke-width: 1.3; transition: stroke .35s, opacity .6s, stroke-width .35s; }
+.g-edge text { font-family: var(--serif); fill: var(--ink-3); transition: fill .35s, opacity .6s; paint-order: stroke; stroke: var(--paper); stroke-width: 3px; stroke-linejoin: round; }
+.g-edge.walked path, .g-edge.hot path { stroke: var(--acc, var(--blue-7)); stroke-width: 2.1; }
+.g-edge.walked text { fill: var(--acc-ink, var(--blue-8)); font-weight: 700; }
+.g-edge.flash path { stroke: var(--acc, var(--blue-7)); stroke-width: 2.8; }
+.g-edge.cut path { stroke: var(--red-6); stroke-dasharray: 4 3; opacity: .7; }
+.g-edge.cut text { fill: var(--red-6); text-decoration: line-through; }
+.g-edge.new text { fill: var(--olive-7); }
+.g-edge.gone { opacity: .1; }
+.g-node .body { fill: var(--paper); stroke: var(--acc, var(--blue-7)); stroke-width: 1.5; transition: fill .3s, stroke .3s; }
+.g-node .ring { fill: none; stroke: var(--acc, var(--blue-7)); stroke-width: 1; }
+.g-node .halo { fill: var(--acc, var(--blue-5)); opacity: 0; transition: opacity .3s; }
+.g-node text { font-family: var(--serif); fill: var(--acc-ink, var(--blue-8)); transition: fill .3s; }
+.g-node .qq { font-style: italic; }
+.g-node { transition: opacity .6s; }
+.g-node.walked .body { fill: var(--acc-soft, var(--blue-1)); stroke-width: 2.1; }
+.g-node.on .body { fill: var(--acc, var(--blue-7)); stroke: var(--acc, var(--blue-7)); }
+.g-node.on text { fill: var(--paper); }
+.g-node.on .halo { opacity: .16; }
+.g-node.on .ring { stroke: var(--paper); }
+.g-node.cut .body { stroke: var(--red-6); stroke-dasharray: 3 3; }
+.g-node.gone { opacity: .12; }
+.g-node.warm .body { stroke: var(--warm-7); } .g-node.warm text { fill: var(--warm-7); }
+.g-node.warm.walked .body { fill: var(--warm-0); }
+.g-node.warm.on .body { fill: var(--warm-7); }
+.g-node.warm.on text { fill: var(--paper); }
+.g-node.warm.on .halo { fill: var(--warm-5); }
+.g-band rect { fill: var(--olive-0); stroke: var(--olive-1); }
+.g-band.acc rect { fill: var(--blue-0); stroke: var(--blue-1); }
+.g-band text { font-family: var(--sans); font-size: 10.5px; fill: var(--olive-7); letter-spacing: .03em; }
+.g-band.acc text { fill: var(--blue-7); }
+.pmm .pt { fill: var(--blue-7); }
+.pmm .pt.dead { fill: var(--red-6); }
+
+/* ---------- motion ---------- */
+.rv { transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.rv.pre { opacity: 0; transform: translateY(12px); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rv, .rv.pre { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .play { grid-template-columns: minmax(0, 1fr); }
+  .play .sym-card { flex: none; contain: none; }
+  .alpha { grid-auto-rows: auto; }
+  .alpha img { height: 48px; }
+  .chips { min-height: 0; }
+  .play-left, .play-right { display: contents; }
+  .play > * > * { min-width: 0; }
+  .chart-grid, .reuse-a, .rb-row { grid-template-columns: minmax(0, 1fr); }
+  .chart-grid > .chart + .chart { margin-top: 28px; }
+  .pl-body { grid-template-columns: minmax(0, 1fr); }
+  .pl-fig { max-width: 220px; }
+}
+@media (max-width: 820px) {
+  .nav ul li.opt { display: none; }
+  .nav { padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+  .nav .logos img { height: 36px; }
+}
+@media (max-width: 620px) {
+  .tz { grid-template-columns: minmax(0, 1fr); row-gap: 20px; }
+  .tz-steer .tz-row { width: 50%; margin-inline: auto; grid-auto-columns: 1fr; }
+  .tz-chip { top: 11px; left: 11px; font-size: .64rem; padding: 2px 8px; }
+  /* wide figures keep a legible size and scroll sideways */
+  .pfig { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; aspect-ratio: auto; }
+  .fig1 svg { min-width: 760px; }
+  .fig3 .mstage, .fig3 .ex-panel { min-width: 820px; }
+}
+@media (max-width: 700px) {
+  .head-tabs { grid-template-columns: minmax(0, 1fr); row-gap: 12px; }
+  .head-tabs .seg { justify-self: start; }
+  .ptitle { font-size: 1.42rem; }
+
+  .shell { padding: 0 clamp(14px, 4vw, 22px); }
+  .wrap { padding-inline: 0; }
+  .band { padding-block: 34px; }
+  .hero { padding-block: 48px 24px; }
+}
+@media (max-width: 520px) {
+  .nav { padding-inline: 14px; gap: 10px; }
+  .tz-cap { font-size: .9rem; }
+  .nav ul { gap: 11px; font-size: .88rem; }
+  .nav .logos { gap: 8px; }
+  .nav .logos img { height: 28px; }
+  .trip { gap: 6px; }
+}
+</style>
+</head>
+<body>
+
+
+<nav class="nav" id="nav" aria-label="Sections" lang="en">
+  <a class="logos" href="#top" aria-label="Back to top"><img src="media/img/cmu_logo.png" alt="Carnegie Mellon University" width="64" height="41"><img src="media/img/icl_logo.jpg" alt="Intelligent Control Lab" width="33" height="41"></a>
+  <ul>
+    <li class="opt"><a class="nl" href="#idea">Takeaways</a></li>
+    <li><a class="nl" href="#why">Why</a></li>
+    <li><a class="nl" href="#method">Method</a></li>
+    <li><a class="nl" href="#try">Try it</a></li>
+    <li><a class="nl" href="#results">Results</a></li>
+    <li><a class="nl" href="#reuse">Reuse</a></li>
+  </ul>
+</nav>
+
+<main id="top" class="shell" lang="en">
+<!-- ======================= HERO ======================= -->
+<header class="hero wrap">
+  <h1 class="ptitle">
+    <span class="ln">Inference-Time Robot Behavior Steering through</span>
+    <span class="ln">Physically-Aware <span class="key">Re</span>configuration of Task-<span class="key">Struct</span>ure</span>
+  </h1>
+  <div class="authors">
+    <span><a href="https://pyywill.github.io/" target="_blank" rel="noopener">Yiyuan Pan</a>,</span>
+    <span><a href="https://hanjianghu.net/" target="_blank" rel="noopener">Hanjiang Hu</a>,</span>
+    <span><a href="https://shangtaoli.github.io/" target="_blank" rel="noopener">Shangtao Li</a>,</span>
+    <span><a href="https://xushengluo92.github.io/" target="_blank" rel="noopener">Xusheng Luo</a><sup>*</sup>,</span>
+    <span><a href="https://icontrol.ri.cmu.edu/people/changliu.html" target="_blank" rel="noopener">Changliu Liu</a><sup>*</sup></span>
+  </div>
+  <p class="affil">Robotics Institute, Carnegie Mellon University</p>
+  <p class="venue">CoRL 2026</p>
+  <div class="links">
+    <a class="btn" href="https://arxiv.org/pdf/2606.26588" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 1.5h5.5L13 5v9.5H4z"/><path d="M9.5 1.5V5H13M6 8.5h5M6 11h5"/></svg>Paper</a>
+    <a class="btn ghost" href="https://arxiv.org/abs/2606.26588" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M3 13 13 3M6 3h7v7"/></svg>arXiv</a>
+    <span class="btn ghost" aria-disabled="true" title="Code release is in preparation"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4"/></svg>Code &middot; coming soon</span>
+  </div>
+</header>
+
+<section class="teaser wrap" aria-label="Real-robot example: CanSorting">
+  <div class="tz" id="teaser">
+    <div class="tz-panel tz-base">
+      <span class="tz-chip">Base policy</span>
+      <div class="tz-row">
+        <figure class="tz-v"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_base_red.jpg" src="media/real/cansort_base_red.mp4" aria-label="Base policy: red can into the red bowl"></video><span class="spd">4&times;</span></div></figure>
+        <figure class="tz-v"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_base_green.jpg" src="media/real/cansort_base_green.mp4" aria-label="Base policy: green can into the green bowl"></video><span class="spd">4&times;</span></div></figure>
+      </div>
+    </div>
+    <div class="tz-panel tz-steer">
+      <span class="tz-chip">Steered</span>
+      <div class="tz-row">
+        <figure class="tz-v"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_steer_red_to_green.jpg" src="media/real/cansort_steer_red_to_green.mp4" aria-label="Steered policy: red can into the green bowl"></video><span class="spd">4&times;</span></div></figure>
+      </div>
+    </div>
+  </div>
+  <p class="tz-cap">Preference: <strong><em>&ldquo;Put the red can into the green bowl.&rdquo;</em></strong></p>
+</section>
+
+<!-- ======================= IDEA ======================= -->
+<section class="band mist" id="idea">
+  <div class="wrap">
+    <div class="section-head rv"><h2>Key Takeaways</h2></div>
+    <div class="takeaways">
+      <a class="takeaway rv" href="#try"><p class="prose"><b>Steer a learned policy with a sentence:</b> ReStruct follows preferences stated in plain language, from object-centric requests to temporal orderings, without retraining or expert-written guidance.</p></a>
+      <a class="takeaway rv" href="#method"><p class="prose"><b>Steering you can verify:</b> the state machine shows which transitions a preference removes and the prototype action priors show which actions remain, so the preference is checked at both the symbolic and the control level.</p></a>
+      <a class="takeaway rv" href="#reuse"><p class="prose"><b>New behavior from existing experience:</b> ReStruct composes a target behavior by injecting the preference into demonstrations of related tasks, improving data efficiency and cross-task adaptation.</p></a>
+    </div>
+    <details class="abstract rv">
+      <summary>Abstract</summary>
+      <p class="prose">A central challenge in deploying learned robot policies is inference-time behavior steering: redirecting a policy at test time to satisfy user preferences not anticipated during training, without retraining. Existing methods fail in two modes: end-to-end methods require fine-tuning or expert-level guidance, while neuro-symbolic methods rely on predefined symbols whose edits can result in logically reasonable but physically infeasible plans. To address this challenge, we propose ReStruct, which builds upon a neural automaton policy that decomposes a visuomotor policy into a high-level state-machine skeleton capturing task structure and a low-level continuous controller represented as a residual policy. Specifically, ReStruct adopts the automaton to represent the preference and incorporates it into the skeleton through a synchronous product, thereby reconfiguring the task structure. With the controller kept frozen, the action priors provided by the skeleton are updated accordingly to enable physically-aware control under a modified task structure. Extensive experiments from simulation and real-world show that ReStruct steers a wide range of preferences, from object-centric specifications to temporal-logic constraints, and after steering surpasses existing methods, exceeding VLA models in both task success and preference-following by up to 25%.</p>
+    </details>
+    <details class="prelim rv" open>
+      <summary><span class="pl-title">Preliminary: Neural Automaton Policy</span><span class="pl-tag">ENAP &middot; RSS 2026</span><a class="pl-link" href="https://intelligent-control-lab.github.io/ENAP-project-webpage/" target="_blank" rel="noopener">Project page &#8599;</a><span class="pl-chev" aria-hidden="true"></span></summary>
+      <div class="pl-body">
+        <figure class="pl-fig" id="fig2" data-svg="media/fig/fig2.svg" aria-label="ENAP diagram: a probabilistic Mealy machine (PMM) reads the observation, tracks the task phase q_t and passes an action prior to the control network pi_psi, which outputs the action."></figure>
+        <p class="pl-text prose"><b>A neuro-symbolic policy</b> learned from demonstrations: a probabilistic Mealy machine (PMM) over visual symbols tracks the task phase <span class="math">q<sub>t</sub></span> and gives a small control network <span class="math">&pi;<sub>&psi;</sub></span> an action prior to refine. We build on a state machine because it is the most general of the usual task representations: PDDL domains and LTL<sub>f</sub> formulas can both be written as one, so a preference in either form merges into the policy&rsquo;s own structure.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ======================= WHY ======================= -->
+<section class="band" id="why">
+  <div class="wrap">
+    <div class="section-head rv">
+      <h2>Two ways steering fails</h2>
+      <p class="prose">End-to-end and neuro-symbolic policies fail in opposite ways; ReStruct avoids both.</p>
+    </div>
+    <div class="seg fig-tabs rv" role="group" aria-label="Steering mechanism" id="fig1-tabs">
+      <button type="button" aria-pressed="true">(a) Base policy</button>
+      <button type="button" aria-pressed="false">(b) End-to-end</button>
+      <button type="button" aria-pressed="false">(c) Neuro-symbolic</button>
+      <button type="button" aria-pressed="false">(d) ReStruct</button>
+    </div>
+    <figure class="pfig fig1 rv" id="fig1" data-svg="media/fig/fig1.svg" aria-label="Behavior steering mechanism for different models: (a) base policy, (b) end-to-end policy with injected guidance, (c) neuro-symbolic policy with an edited plan that violates vertical clearance, (d) ReStruct with skeleton editing and prior editing over a frozen local controller."></figure>
+    <div class="fig-cap" id="fig1-cap" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ======================= METHOD ======================= -->
+<section class="band mist" id="method">
+  <div class="wrap">
+    <div class="section-head rv">
+      <h2>Three steps, one frozen controller</h2>
+      <p class="prose">ReStruct builds on ENAP, which pairs a learned state machine with a small action network. Steering changes only the state machine and the action lists on its edges.</p>
+    </div>
+    <div class="seg fig-tabs rv" role="group" aria-label="Method stage" id="fig3-tabs">
+      <button type="button" aria-pressed="true">Overview</button>
+      <button type="button" aria-pressed="false">Base policy (ENAP)</button>
+      <button type="button" aria-pressed="false">1 &middot; Compile</button>
+      <button type="button" aria-pressed="false">2 &middot; Reconfigure</button>
+      <button type="button" aria-pressed="false">3 &middot; Replay</button>
+      <button type="button" aria-pressed="false">Steered policy</button>
+    </div>
+    <figure class="pfig fig3 rv" id="fig3">
+      <div class="mstage">
+        <div class="ms-paper" data-svg="media/fig/fig3.svg" aria-label="Overview of ReStruct on PegInsert. (a) Base policy: an encoder, an input alphabet of visual symbols, a global skeleton state machine whose edges hold action lists, and a local network with attention head, residual head and clamp. (b) Global steering: the preference &lsquo;Don&rsquo;t insert red side of the peg&rsquo; is compiled by a VLM and Spot into an automaton, whose product with the skeleton gives the product skeleton. (c) Local replay: demonstrations accepted by the product skeleton refill the action lists; the steered policy reuses the original local network and encoder."></div>
+      </div>
+      <div class="ex-panel ex-wrap"></div>
+    </figure>
+    <div class="fig-cap" id="fig3-cap" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ======================= PLAYGROUND ======================= -->
+<section class="band" id="try">
+  <div class="wrap">
+    <div class="section-head head-tabs rv">
+      <div class="ht">
+        <h2>Steer it yourself</h2>
+        <p class="prose">Pick a task and a preference, or type your own.</p>
+      </div>
+      <div class="seg" role="group" aria-label="Simulation task" id="pg-tasks">
+        <button type="button" data-task="stack" aria-pressed="true">StackCube</button>
+        <button type="button" data-task="peg" aria-pressed="false">PegInsert</button>
+        <button type="button" data-task="pusht" aria-pressed="false">SeqPushT</button>
+      </div>
+    </div>
+    <div class="play" id="play">
+      <div class="play-left">
+        <div class="stage" id="stage-play" style="order:1"><canvas aria-label="3D replay of a recorded closed-loop rollout of the selected policy"></canvas><div class="hud"></div><div class="loading">Loading&hellip;</div></div>
+        <div class="card sym-card" style="order:4">
+          <h4>Learned symbols</h4>
+          <div class="alpha" id="pg-alpha"></div>
+        </div>
+      </div>
+      <div class="play-right">
+        <div class="card prefbox" style="order:2">
+          <h4>Preference</h4>
+          <form class="prefinput" id="pg-form" autocomplete="off">
+            <label for="pg-text" class="sr-only">Type a preference</label>
+            <input id="pg-text" name="pg-text" type="text" placeholder="e.g. Don&rsquo;t touch the red cube" maxlength="120">
+            <button type="submit">Steer</button>
+          </form>
+          <div class="chips" id="pg-chips"></div>
+          <p class="match-msg" id="pg-msg" aria-live="polite"></p>
+        </div>
+        <div class="am-stack" style="order:3">
+          <div class="am-box mode-base" id="am-box">
+            <h4 class="am-title" id="am-title">Base policy</h4>
+            <p class="explain" id="pg-explain" aria-live="polite"></p>
+            <div class="graphbox" id="pg-base"></div>
+            <div class="graphbox" id="pg-dfa" hidden></div>
+            <div class="graphbox" id="pg-steer" hidden></div>
+          </div>
+          <button type="button" class="peek off" id="peek-1" disabled>Preference automaton</button>
+          <button type="button" class="peek off" id="peek-2" disabled>Steered policy</button>
+        </div>
+      </div>
+    </div>
+    <p class="note foot rv">Recorded ManiSkill rollouts of the trained policy, replayed slowed down. Symbol captions are VLM-generated from sample frames of each cluster; the policy itself only uses the cluster index.</p>
+  </div>
+</section>
+
+<!-- ======================= RESULTS ======================= -->
+<section class="band" id="results">
+  <div class="wrap">
+    <div class="section-head rv">
+      <h2>Preference kept, task intact</h2>
+      <p class="prose">Every method is trained on the same demonstrations and steered in the way its architecture allows.</p>
+    </div>
+    <div class="chart-grid">
+      <div class="chart rv" id="chart-sim"></div>
+      <div class="chart rv" id="chart-real"></div>
+    </div>
+    <details class="tables" id="tables" open>
+      <summary>Full tables</summary>
+      <div id="tables-body"></div>
+    </details>
+  </div>
+</section>
+
+<!-- ======================= REUSE ======================= -->
+<section class="band" id="reuse">
+  <div class="wrap">
+    <div class="section-head rv">
+      <h2>Reusing related experience</h2>
+      <p class="prose">One state machine spans all demonstrations, so a preference can route the policy through pieces of different ones.</p>
+    </div>
+    <div class="reuse-a rv">
+      <div class="txt">
+        <h3>Red can, green bowl</h3>
+        <p class="lead prose">CanSorting demonstrations share a pick phase, then branch by bowl. The steered rollout picks the red can as the red-can demonstrations do, then takes the green-bowl branch that only green-can demonstrations used. Hover a video to play it.</p>
+      </div>
+      <div class="trip" id="cs-trip">
+        <figure data-v="cansort_base_red"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_base_red.jpg" src="media/real/cansort_base_red.mp4"></video><span class="spd">4&times;</span></div><figcaption>red can &rarr; red bowl</figcaption></figure>
+        <figure data-v="cansort_base_green"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_base_green.jpg" src="media/real/cansort_base_green.mp4"></video><span class="spd">4&times;</span></div><figcaption>green can &rarr; green bowl</figcaption></figure>
+        <figure data-v="cansort_steer_red_to_green" class="on"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_steer_red_to_green.jpg" src="media/real/cansort_steer_red_to_green.mp4"></video><span class="spd">4&times;</span></div><figcaption><b>Steered:</b> red can &rarr; green bowl</figcaption></figure>
+      </div>
+    </div>
+    <div class="reuse-b rv">
+      <h3>One order from rollouts in many orders</h3>
+      <div class="rb-row">
+        <div class="rb-panel"><div class="chart" id="calvin-chart"></div></div>
+        <div class="rb-panel calvin-graph"><svg id="calvin-graph" viewBox="0 0 440 400" role="img" aria-label="CALVIN skill graph collapsing to the requested chain"></svg></div>
+      </div>
+      <p class="lead prose">On CALVIN, a requested order collapses the skill graph extracted from FLOWER rollouts into a single chain, without fine-tuning.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= BIBTEX ======================= -->
+<section class="band" id="bibtex">
+  <div class="wrap">
+    <div class="section-head"><h2>BibTeX</h2></div>
+    <div class="bib">
+      <button type="button" class="bib-copy" id="bib-copy">Copy</button>
+<pre id="bib-text">@article{pan2026inference,
+  title={Inference-Time Robot Behavior Steering through Physically-Aware Reconfiguration of Task-Structure},
+  author={Pan, Yiyuan and Hu, Hanjiang and Li, Shangtao and Luo, Xusheng and Liu, Changliu},
+  journal={arXiv preprint arXiv:2606.26588},
+  year={2026}
+}</pre>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer lang="en">Intelligent Control Lab &middot; Robotics Institute, Carnegie Mellon University</footer>
+<div class="tooltip" id="tip" role="tooltip"></div>
+
+<script src="js/util.js"></script>
+<script src="js/sim.js"></script>
+<script src="js/pmmgraph.js"></script>
+<script src="js/playground.js"></script>
+<script src="js/real.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/example.js"></script>
+<script src="js/figs.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
