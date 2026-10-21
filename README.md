@@ -6,7 +6,7 @@ Yiyuan Pan, Hanjiang Hu, Shangtao Li, Xusheng Luo\*, Changliu Liu\* · Robotics 
 
 ReStruct is an inference-time policy steering method for robot manipulation. A preference stated in plain language is compiled into a temporal-logic (LTL<sub>f</sub>) automaton and merged into the learned state machine of a neural automaton policy ([ENAP](https://intelligent-control-lab.github.io/ENAP-project-webpage/), RSS 2026). The low-level controller stays frozen, so the policy follows the preference without retraining.
 
-This repository hosts the project page, a static site served by GitHub Pages from the repository root (`index.html`). The 3D replays use recorded ManiSkill rollouts stored under `data/`; three.js is loaded from a CDN. Code release: coming soon.
+This repository hosts the project page, a static site served by GitHub Pages from the repository root (`index.html`). The 3D replays use recorded ManiSkill rollouts stored under `data/`; three.js is loaded from a CDN. Code: [PyyWill/ReStruct](https://github.com/PyyWill/ReStruct) (release in preparation).
 
 ## Citation
 
