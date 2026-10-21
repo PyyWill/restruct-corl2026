@@ -266,10 +266,12 @@
     });
   }
   function buildTables() {
-    // built when the browser is idle rather than on scroll, so the sections below never shift
-    const det = document.getElementById('tables');
+    // tools/prerender.py writes these tables into index.html so crawlers that skip scripts can read the numbers;
+    // without that, build them when the browser is idle rather than on scroll, so the sections below never shift
+    const det = document.getElementById('tables'), body = document.getElementById('tables-body');
+    if (body.querySelector('table')) return;
     let done = false;
-    const go = () => { if (!done) { done = true; buildTablesNow(document.getElementById('tables-body')); } };
+    const go = () => { if (!done) { done = true; buildTablesNow(body); } };
     U.idle(go, 2000);
     U.onVisible(det, go, 1200);
   }
@@ -298,5 +300,6 @@
       buildCalvin();
       buildTables();
     },
+    tablesHTML() { const d = document.createElement('div'); buildTablesNow(d); return d.innerHTML; },   // for tools/prerender.py
   };
 })();

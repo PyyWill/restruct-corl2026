@@ -4,10 +4,88 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>ReStruct</title>
+<title>ReStruct: Inference-Time Robot Behavior Steering through Physically-Aware Reconfiguration of Task-Structure (CoRL 2026)</title>
+<!-- Published page only: build.py puts this block in place of the short <title> of index.html. -->
+<meta name="description" content="ReStruct (CoRL 2026) is an inference-time policy steering method: a plain-language preference is compiled into a temporal-logic automaton that reconfigures a robot policy's learned state machine, without retraining, outperforming VLAs steered by prompt.">
+<link rel="canonical" href="https://pyywill.github.io/restruct-corl2026/">
+<meta name="google-site-verification" content="WBlWpfo18hLpHQM6nIZcIvYprRjOvSmrWRgfmSaHdq8">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ReStruct">
+<meta property="og:title" content="ReStruct: Inference-Time Robot Behavior Steering (CoRL 2026)">
+<meta property="og:description" content="ReStruct (CoRL 2026) is an inference-time policy steering method: a plain-language preference is compiled into a temporal-logic automaton that reconfigures a robot policy's learned state machine, without retraining, outperforming VLAs steered by prompt.">
+<meta property="og:url" content="https://pyywill.github.io/restruct-corl2026/">
+<meta property="og:image" content="https://pyywill.github.io/restruct-corl2026/media/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ReStruct on a real robot: the base policy puts each can into the bowl of its own color; steered by one sentence, it puts the red can into the green bowl">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ReStruct: Inference-Time Robot Behavior Steering (CoRL 2026)">
+<meta name="twitter:description" content="ReStruct (CoRL 2026) is an inference-time policy steering method: a plain-language preference is compiled into a temporal-logic automaton that reconfigures a robot policy's learned state machine, without retraining, outperforming VLAs steered by prompt.">
+<meta name="twitter:image" content="https://pyywill.github.io/restruct-corl2026/media/img/og.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ScholarlyArticle",
+      "@id": "https://pyywill.github.io/restruct-corl2026/#paper",
+      "headline": "Inference-Time Robot Behavior Steering through Physically-Aware Reconfiguration of Task-Structure",
+      "name": "Inference-Time Robot Behavior Steering through Physically-Aware Reconfiguration of Task-Structure",
+      "alternateName": "ReStruct",
+      "author": [
+        { "@type": "Person", "name": "Yiyuan Pan", "url": "https://pyywill.github.io/", "affiliation": { "@id": "https://pyywill.github.io/restruct-corl2026/#cmu-ri" } },
+        { "@type": "Person", "name": "Hanjiang Hu", "url": "https://hanjianghu.net/", "affiliation": { "@id": "https://pyywill.github.io/restruct-corl2026/#cmu-ri" } },
+        { "@type": "Person", "name": "Shangtao Li", "url": "https://shangtaoli.github.io/", "affiliation": { "@id": "https://pyywill.github.io/restruct-corl2026/#cmu-ri" } },
+        { "@type": "Person", "name": "Xusheng Luo", "url": "https://xushengluo92.github.io/", "affiliation": { "@id": "https://pyywill.github.io/restruct-corl2026/#cmu-ri" } },
+        { "@type": "Person", "name": "Changliu Liu", "url": "https://icontrol.ri.cmu.edu/people/changliu.html", "affiliation": { "@id": "https://pyywill.github.io/restruct-corl2026/#cmu-ri" } }
+      ],
+      "datePublished": "2026-06-25",
+      "inLanguage": "en",
+      "description": "Accepted to the Conference on Robot Learning (CoRL) 2026.",
+      "abstract": "A central challenge in deploying learned robot policies is inference-time behavior steering: redirecting a policy at test time to satisfy user preferences not anticipated during training, without retraining. Existing methods fail in two modes: end-to-end methods require fine-tuning or expert-level guidance, while neuro-symbolic methods rely on predefined symbols whose edits can result in logically reasonable but physically infeasible plans. To address this challenge, we propose ReStruct, which builds upon a neural automaton policy that decomposes a visuomotor policy into a high-level state-machine skeleton capturing task structure and a low-level continuous controller represented as a residual policy. Specifically, ReStruct adopts the automaton to represent the preference and incorporates it into the skeleton through a synchronous product, thereby reconfiguring the task structure. With the controller kept frozen, the action priors provided by the skeleton are updated accordingly to enable physically-aware control under a modified task structure. Extensive experiments from simulation and real-world show that ReStruct steers a wide range of preferences, from object-centric specifications to temporal-logic constraints, and after steering surpasses existing methods, exceeding VLA models in both task success and preference-following by up to 25%.",
+      "keywords": "inference-time policy steering, behavior steering, zero-shot, robot manipulation, neuro-symbolic learning, state machine, linear temporal logic (LTLf), natural-language preferences, vision-language-action (VLA) baselines, CoRL 2026",
+      "identifier": { "@type": "PropertyValue", "propertyID": "arXiv", "value": "2606.26588" },
+      "sameAs": ["https://arxiv.org/abs/2606.26588", "https://openreview.net/forum?id=NCeeEHy8d5"],
+      "url": "https://pyywill.github.io/restruct-corl2026/",
+      "image": "https://pyywill.github.io/restruct-corl2026/media/img/og.jpg",
+      "isBasedOn": {
+        "@type": "ScholarlyArticle",
+        "@id": "https://intelligent-control-lab.github.io/ENAP-project-webpage/#paper",
+        "name": "Emergent Neural Automaton Policies: Learning Symbolic Structure from Visuomotor Trajectories",
+        "alternateName": "ENAP",
+        "url": "https://intelligent-control-lab.github.io/ENAP-project-webpage/",
+        "sameAs": ["https://doi.org/10.15607/RSS.2026.XXII.144", "https://arxiv.org/abs/2603.25903"]
+      },
+      "citation": [
+        { "@id": "https://intelligent-control-lab.github.io/ENAP-project-webpage/#paper" },
+        { "@type": "ScholarlyArticle", "name": "Inference-Time Policy Steering through Human Interactions", "url": "https://arxiv.org/abs/2411.16627" },
+        { "@type": "ScholarlyArticle", "name": "DynaGuide: Steering Diffusion Polices with Active Dynamic Guidance", "url": "https://arxiv.org/abs/2506.13922" },
+        { "@type": "ScholarlyArticle", "name": "Bidirectional Decoding: Improving Action Chunking via Guided Test-Time Sampling", "url": "https://arxiv.org/abs/2408.17355" },
+        { "@type": "ScholarlyArticle", "name": "Steering Your Generalists: Improving Robotic Foundation Models via Value Guidance", "url": "https://arxiv.org/abs/2410.13816" },
+        { "@type": "ScholarlyArticle", "name": "Steering Your Diffusion Policy with Latent Space Reinforcement Learning", "url": "https://arxiv.org/abs/2506.15799" },
+        { "@type": "ScholarlyArticle", "name": "From Foresight to Forethought: VLM-In-the-Loop Policy Steering via Latent Alignment", "url": "https://arxiv.org/abs/2502.01828" },
+        { "@type": "ScholarlyArticle", "name": "Towards Deploying VLA without Fine-Tuning: Plug-and-Play Inference-Time VLA Policy Steering via Embodied Evolutionary Diffusion", "url": "https://arxiv.org/abs/2511.14178" }
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://pyywill.github.io/restruct-corl2026/#cmu-ri",
+      "name": "Robotics Institute, Carnegie Mellon University",
+      "url": "https://www.ri.cmu.edu/"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://pyywill.github.io/restruct-corl2026/",
+      "url": "https://pyywill.github.io/restruct-corl2026/",
+      "name": "ReStruct: Inference-Time Robot Behavior Steering through Physically-Aware Reconfiguration of Task-Structure (CoRL 2026)",
+      "mainEntity": { "@id": "https://pyywill.github.io/restruct-corl2026/#paper" },
+      "relatedLink": ["https://intelligent-control-lab.github.io/ENAP-project-webpage/", "https://openreview.net/forum?id=NCeeEHy8d5"]
+    }
+  ]
+}
+</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%229%22 cy=%2216%22 r=%225%22 fill=%22none%22 stroke=%22%234D5A7A%22 stroke-width=%222.4%22/%3E%3Ccircle cx=%2224%22 cy=%2216%22 r=%225%22 fill=%22%234D5A7A%22/%3E%3Cpath d=%22M14 16h5%22 stroke=%22%234D5A7A%22 stroke-width=%222.4%22/%3E%3C/svg%3E">
-<meta name="description" content="ReStruct steers a learned robot policy at inference time by reconfiguring its state-machine task structure from a natural-language preference, without retraining.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caladea:ital,wght@0,400;0,700;1,400;1,700&family=Carlito:ital,wght@0,400;0,700;1,400&family=Tinos:ital@0;1&display=swap">
@@ -130,6 +208,9 @@ p { margin: 0; }
 .bib pre { margin: 0; padding-right: 64px; font-family: var(--mono); font-size: .86rem; line-height: 1.6; color: var(--ink); white-space: pre-wrap; word-break: break-word; }
 .bib-copy { position: absolute; top: 10px; right: 10px; border: 1px solid var(--line-2); background: var(--paper); color: var(--ink-2); border-radius: 8px; padding: 4px 12px; font: 600 .8rem var(--sans); cursor: pointer; }
 .bib-copy:hover { color: var(--ink); border-color: var(--blue-3); }
+.bib-note { margin: -4px 0 12px; }
+.venue a { color: inherit; text-decoration: none; }
+.venue a:hover { color: inherit; text-decoration: underline; }
 
 /* segmented tabs */
 .seg { display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); flex-wrap: wrap; justify-self: start; }
@@ -265,6 +346,18 @@ circle.ex-auto { fill: #fff; } circle.ex-auto.inner { fill: none; }
 .fig-cap p { color: var(--ink-2); font-size: 1.0625rem; line-height: 1.62; text-align: justify; }
 .fig-cap b { color: var(--ink); font-weight: 700; }
 .fig-cap code { font-family: var(--mono); font-size: .86em; color: var(--blue-8); }
+.fig-cap > p[hidden] { display: none; }
+/* related steering work (Why) and the results summary: same voice as the figure captions */
+.related, .res-sum { color: var(--ink-2); font-size: 1.0625rem; line-height: 1.62; }
+.related { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.related b { color: var(--ink); font-weight: 700; }
+.res-sum { margin-top: 22px; }
+.related a { color: var(--ink); text-decoration-color: var(--line-2); }
+.related a:hover { color: var(--blue-8); text-decoration-color: currentColor; }
+/* questions: one collapsible row each, styled like the abstract toggle */
+.qa + .qa { margin-top: 12px; }
+.qa summary { color: var(--ink); font-weight: 700; }
+.qa p { padding-left: 28px; }
 .stage { position: relative; border-radius: 6px; overflow: hidden; background: var(--mist); aspect-ratio: 4 / 3; }
 .stage canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
 .stage canvas:active { cursor: grabbing; }
@@ -524,7 +617,7 @@ svg.pmm { overflow: visible; }
     <span><a href="https://icontrol.ri.cmu.edu/people/changliu.html" target="_blank" rel="noopener">Changliu Liu</a><sup>*</sup></span>
   </div>
   <p class="affil">Robotics Institute, Carnegie Mellon University</p>
-  <p class="venue">CoRL 2026</p>
+  <p class="venue"><a href="https://openreview.net/forum?id=NCeeEHy8d5" target="_blank" rel="noopener" title="Conference on Robot Learning (CoRL) 2026 · OpenReview">CoRL 2026</a></p>
   <div class="links">
     <a class="btn" href="https://arxiv.org/pdf/2606.26588" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 1.5h5.5L13 5v9.5H4z"/><path d="M9.5 1.5V5H13M6 8.5h5M6 11h5"/></svg>Paper</a>
     <a class="btn ghost" href="https://arxiv.org/abs/2606.26588" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M3 13 13 3M6 3h7v7"/></svg>arXiv</a>
@@ -556,7 +649,7 @@ svg.pmm { overflow: visible; }
   <div class="wrap">
     <div class="section-head rv"><h2>Key Takeaways</h2></div>
     <div class="takeaways">
-      <a class="takeaway rv" href="#try"><p class="prose"><b>Steer a learned policy with a sentence:</b> ReStruct follows preferences stated in plain language, from object-centric requests to temporal orderings, without retraining or expert-written guidance.</p></a>
+      <a class="takeaway rv" href="#try"><p class="prose"><b>Steer a learned policy with a sentence:</b> ReStruct performs inference-time policy steering from a preference stated in plain language. Object-centric requests and temporal orderings alike are compiled into a temporal-logic (LTL<sub>f</sub>) automaton, with no retraining and no expert-written guidance.</p></a>
       <a class="takeaway rv" href="#method"><p class="prose"><b>Steering you can verify:</b> the state machine shows which transitions a preference removes and the prototype action priors show which actions remain, so the preference is checked at both the symbolic and the control level.</p></a>
       <a class="takeaway rv" href="#reuse"><p class="prose"><b>New behavior from existing experience:</b> ReStruct composes a target behavior by injecting the preference into demonstrations of related tasks, improving data efficiency and cross-task adaptation.</p></a>
     </div>
@@ -579,7 +672,7 @@ svg.pmm { overflow: visible; }
   <div class="wrap">
     <div class="section-head rv">
       <h2>Two ways steering fails</h2>
-      <p class="prose">End-to-end and neuro-symbolic policies fail in opposite ways; ReStruct avoids both.</p>
+      <p class="prose">End-to-end policies (VLAs, diffusion policies) and neuro-symbolic policies fail in opposite ways; ReStruct avoids both.</p>
     </div>
     <div class="seg fig-tabs rv" role="group" aria-label="Steering mechanism" id="fig1-tabs">
       <button type="button" aria-pressed="true">(a) Base policy</button>
@@ -588,7 +681,13 @@ svg.pmm { overflow: visible; }
       <button type="button" aria-pressed="false">(d) ReStruct</button>
     </div>
     <figure class="pfig fig1 rv" id="fig1" data-svg="media/fig/fig1.svg" aria-label="Behavior steering mechanism for different models: (a) base policy, (b) end-to-end policy with injected guidance, (c) neuro-symbolic policy with an edited plan that violates vertical clearance, (d) ReStruct with skeleton editing and prior editing over a frozen local controller."></figure>
-    <div class="fig-cap" id="fig1-cap" aria-live="polite"></div>
+    <div class="fig-cap" id="fig1-cap" aria-live="polite">
+      <p><b>Base policy.</b> Trained on demonstrations that put the can into the trash bin and the mug onto the shelf; neither <span class="math">&phi;<sub>1</sub></span> <span class="pref">Put the can into the shelf.</span> nor <span class="math">&phi;<sub>2</sub></span> <span class="pref">Put the can to the higher place.</span> appears in them.</p>
+      <p hidden><b>End-to-end policy.</b> VLAs and diffusion policies take the preference through fine-tuning, the prompt, or a guidance cost added to sampling. With no explicit task structure to edit, each new preference needs retraining or expert-written, roughly differentiable guidance.</p>
+      <p hidden><b>Neuro-symbolic policy.</b> A planner edits a plan over predefined operators, e.g. dropping <code>throw(?b)</code> for <code>pick(can)</code> &rarr; <code>place(shelf)</code>, and networks execute it. The edit never reaches the controller, so the plan for <span class="math">&phi;<sub>1</sub></span> is logically valid but physically infeasible (a vertical-clearance violation), and <span class="math">&phi;<sub>2</sub></span> cannot be expressed: &ldquo;higher place&rdquo; is not in the vocabulary.</p>
+      <p hidden><b>ReStruct.</b> The preference becomes an automaton that edits the policy&rsquo;s own learned state machine, and each edge&rsquo;s action priors are rebuilt from demonstrations that satisfy it. The symbols come from the demonstrations and the controller stays frozen, so the edited plan stays executable.</p>
+    </div>
+    <p class="related prose rv"><b>Related work.</b> Other inference-time policy steering methods act on how an end-to-end policy generates actions: guided or selective sampling (<a href="https://arxiv.org/abs/2411.16627" target="_blank" rel="noopener">ITPS</a>, <a href="https://arxiv.org/abs/2506.13922" target="_blank" rel="noopener">DynaGuide</a>, <a href="https://arxiv.org/abs/2408.17355" target="_blank" rel="noopener">BID</a>), value-guided action ranking (<a href="https://arxiv.org/abs/2410.13816" target="_blank" rel="noopener">V-GPS</a>), reinforcement learning in the diffusion latent space (<a href="https://arxiv.org/abs/2506.15799" target="_blank" rel="noopener">DSRL</a>), VLM-in-the-loop plan selection (<a href="https://arxiv.org/abs/2502.01828" target="_blank" rel="noopener">FOREWARN</a>), and plug-and-play steering of VLAs (<a href="https://arxiv.org/abs/2511.14178" target="_blank" rel="noopener">VLA-Pilot</a>). ReStruct instead edits the task structure the policy has learned, so the preference reaches the frozen controller through the state machine rather than through sampling or prompts.</p>
   </div>
 </section>
 
@@ -597,7 +696,7 @@ svg.pmm { overflow: visible; }
   <div class="wrap">
     <div class="section-head rv">
       <h2>Three steps, one frozen controller</h2>
-      <p class="prose">ReStruct builds on ENAP, which pairs a learned state machine with a small action network. Steering changes only the state machine and the action lists on its edges.</p>
+      <p class="prose">ReStruct builds on ENAP, a neuro-symbolic policy that pairs a learned state machine with a small action network. Steering changes only the state machine and the action lists on its edges; the controller stays frozen.</p>
     </div>
     <div class="seg fig-tabs rv" role="group" aria-label="Method stage" id="fig3-tabs">
       <button type="button" aria-pressed="true">Overview</button>
@@ -613,7 +712,14 @@ svg.pmm { overflow: visible; }
       </div>
       <div class="ex-panel ex-wrap"></div>
     </figure>
-    <div class="fig-cap" id="fig3-cap" aria-live="polite"></div>
+    <div class="fig-cap" id="fig3-cap" aria-live="polite">
+      <p><b>Overview.</b> The paper&rsquo;s pipeline, and below it the same pipeline on StackCube: one sentence, and the policy only ever takes the green-cube branch.</p>
+      <p hidden><b>Base policy.</b> ENAP clusters camera frames into symbols and learns a state machine <span class="math">&#x2133;<sub>1</sub></span> over them; both stacking orders are branches of it.</p>
+      <p hidden><b>1 &middot; Compile.</b> A VLM grounds &ldquo;red cube&rdquo; in the policy&rsquo;s own symbol <span class="math">c<sub>1</sub></span> and writes <span class="math">&#9633;&not;c<sub>1</sub></span>; Spot turns it into the automaton A.</p>
+      <p hidden><b>2 &middot; Reconfigure.</b> <span class="math">&#x2133;<sub>2</sub></span> = <span class="math">&#x2133;<sub>1</sub></span> &otimes; A keeps only the transitions A allows: the <span class="math">c<sub>1</sub></span> edges are cut and q<sub>8</sub> disappears.</p>
+      <p hidden><b>3 &middot; Replay.</b> Demonstrations walk <span class="math">&#x2133;<sub>2</sub></span>; accepted ones refill its action lists, rejected ones are discarded.</p>
+      <p hidden><b>Steered policy.</b> <span class="math">&#x2133;<sub>2</sub></span> drives the same network weights, and the robot now always grasps the green cube.</p>
+    </div>
   </div>
 </section>
 
@@ -672,15 +778,16 @@ svg.pmm { overflow: visible; }
   <div class="wrap">
     <div class="section-head rv">
       <h2>Preference kept, task intact</h2>
-      <p class="prose">Every method is trained on the same demonstrations and steered in the way its architecture allows.</p>
+      <p class="prose">Every method is trained on the same demonstrations and steered in the way its architecture allows: vision-language-action models (<span class="math">&pi;</span><sub>0.5</sub>, OpenVLA) by prompt injection, Diffusion Policy by a soft Lagrangian constraint, and Transformer and GMM policies by reject filtering.</p>
     </div>
     <div class="chart-grid">
       <div class="chart rv" id="chart-sim"></div>
       <div class="chart rv" id="chart-real"></div>
     </div>
+    <p class="res-sum prose rv">Averaged over five preferences, ReStruct succeeds with the preference kept (SRP) in 70.9% of ManiSkill trials, against 33.7% for <span class="math">&pi;</span><sub>0.5</sub>, 19.1% for OpenVLA and 33.8% for Diffusion Policy, and it also has the highest task success (73.4%). On the real Kinova Gen3 robot its SRP is 92.5%, against 23.1% for <span class="math">&pi;</span><sub>0.5</sub> steered through its prompt. Reject filtering keeps Transformer and GMM compliant only by discarding rollouts, which lowers their task success.</p>
     <details class="tables" id="tables" open>
       <summary>Full tables</summary>
-      <div id="tables-body"></div>
+      <div id="tables-body"><!-- tables:begin (written by tools/prerender.py from js/charts.js) --><div class="tbl"><table><caption>Table 1 · ManiSkill, 64 trials over 8 seeds. SR: task success; SRP: success with the preference kept.</caption><thead><tr><th>Method</th><th colspan="5">StackCube</th><th colspan="3">PegInsert</th><th colspan="5">SeqPushT</th></tr><tr><th></th><th>Base SR</th><th>φ₁ SR</th><th>φ₁ SRP</th><th>φ₂ SR</th><th>φ₂ SRP</th><th>Base SR</th><th>φ₁ SR</th><th>φ₁ SRP</th><th>Base SR</th><th>φ₁ SR</th><th>φ₁ SRP</th><th>φ₂ SR</th><th>φ₂ SRP</th></tr></thead><tbody><tr class=""><td>Transformer</td><td class="g0">89.1</td><td class="">29.7</td><td class="">29.7</td><td class="">59.4</td><td class="">59.4</td><td class="g0">90.6</td><td class="">60.9</td><td class="">60.9</td><td class="g0">37.5</td><td class="">21.9</td><td class="">21.9</td><td class="">15.6</td><td class="">15.6</td></tr><tr class=""><td>GMM</td><td class="g0">87.5</td><td class="">42.2</td><td class="">42.2</td><td class="">45.3</td><td class="">45.3</td><td class="g0">85.9</td><td class="">53.1</td><td class="">53.1</td><td class="g0 best">53.1</td><td class="">34.4</td><td class="">34.4</td><td class="">21.9</td><td class="">21.9</td></tr><tr class=""><td>Diffusion Policy</td><td class="g0">93.8</td><td class="">87.5</td><td class="">68.8</td><td class="best">81.2</td><td class="">42.2</td><td class="g0">57.8</td><td class="">42.2</td><td class="">20.3</td><td class="g0">40.6</td><td class="">28.1</td><td class="">18.8</td><td class="">31.2</td><td class="">18.8</td></tr><tr class=""><td>OpenVLA</td><td class="g0">81.2</td><td class="">67.2</td><td class="">21.9</td><td class="">57.8</td><td class="">28.1</td><td class="g0">68.8</td><td class="">54.7</td><td class="">29.7</td><td class="g0">18.8</td><td class="">20.3</td><td class="">12.5</td><td class="">7.8</td><td class="">3.1</td></tr><tr class=""><td><span class="math">π</span><sub>0.5</sub></td><td class="g0">92.2</td><td class="">85.9</td><td class="">37.5</td><td class="">73.4</td><td class="">48.4</td><td class="g0">85.9</td><td class="">75.0</td><td class="">50.0</td><td class="g0">28.1</td><td class="">31.2</td><td class="">26.6</td><td class="">12.5</td><td class="">6.2</td></tr><tr class="ours"><td>ReStruct</td><td class="g0 best">95.3</td><td class="best">98.4</td><td class="best">98.4</td><td class="">76.6</td><td class="best">76.6</td><td class="g0 best">98.4</td><td class="best">95.3</td><td class="best">95.3</td><td class="g0">46.9</td><td class="best">53.1</td><td class="best">50.0</td><td class="best">43.8</td><td class="best">34.4</td></tr></tbody></table></div><div class="tbl"><table><caption>Table 2 · Real robot (Kinova Gen3), 32 trials.</caption><thead><tr><th>Method</th><th colspan="5">CanSorting</th><th colspan="3">PassTeaPot</th><th colspan="5">ConeCover</th></tr><tr><th></th><th>Base SR</th><th>φ₁ SR</th><th>φ₁ SRP</th><th>φ₂ SR</th><th>φ₂ SRP</th><th>Base SR</th><th>φ₁ SR</th><th>φ₁ SRP</th><th>Base SR</th><th>φ₁ SR</th><th>φ₁ SRP</th><th>φ₂ SR</th><th>φ₂ SRP</th></tr></thead><tbody><tr class=""><td><span class="math">π</span><sub>0.5</sub></td><td class="g0 best">100.0</td><td class="">78.1</td><td class="">43.8</td><td class="">71.9</td><td class="">31.2</td><td class="g0 best">100.0</td><td class="">81.2</td><td class="">18.8</td><td class="g0">43.8</td><td class="">43.8</td><td class="">12.5</td><td class="">34.4</td><td class="">9.4</td></tr><tr class="ours"><td>ReStruct</td><td class="g0">93.3</td><td class="best">100.0</td><td class="best">100.0</td><td class="best">100.0</td><td class="best">84.4</td><td class="g0 best">100.0</td><td class="best">100.0</td><td class="best">100.0</td><td class="g0 best">87.5</td><td class="best">100.0</td><td class="best">100.0</td><td class="best">78.1</td><td class="best">78.1</td></tr></tbody></table></div><div class="tbl"><table><caption>Table 3 · CALVIN, success of the first k of 5 requested skills, 64 trials. Flower* is fine-tuned on the requested order.</caption><thead><tr><th>Method</th><th>Params</th><th colspan="3">Causal φ₁</th><th colspan="3">Causal φ₂</th><th colspan="3">Unconstrained φ₁</th><th colspan="3">Unconstrained φ₂</th></tr><tr><th></th><th>(M)</th><th>3/5</th><th>4/5</th><th>5/5</th><th>3/5</th><th>4/5</th><th>5/5</th><th>3/5</th><th>4/5</th><th>5/5</th><th>3/5</th><th>4/5</th><th>5/5</th></tr></thead><tbody><tr class=""><td>HULC</td><td class="g0">47</td><td class="g0">12.5</td><td class="">10.9</td><td class="">1.6</td><td class="g0">7.8</td><td class="">3.1</td><td class="">0.0</td><td class="g0">6.3</td><td class="">0.0</td><td class="">0.0</td><td class="g0">3.1</td><td class="">3.1</td><td class="">3.1</td></tr><tr class=""><td>LCD</td><td class="g0">68</td><td class="g0">15.6</td><td class="">7.8</td><td class="">7.8</td><td class="g0">18.8</td><td class="">12.5</td><td class="">12.5</td><td class="g0">14.1</td><td class="">10.9</td><td class="">3.1</td><td class="g0">15.6</td><td class="">15.6</td><td class="">9.4</td></tr><tr class=""><td>MDT</td><td class="g0">440</td><td class="g0">31.3</td><td class="">31.3</td><td class="">3.1</td><td class="g0 best">100.0</td><td class="best">100.0</td><td class="">35.9</td><td class="g0">14.1</td><td class="">10.9</td><td class="">10.9</td><td class="g0">15.6</td><td class="">15.6</td><td class="">15.6</td></tr><tr class=""><td>Flower</td><td class="g0">947</td><td class="g0">96.9</td><td class="">57.8</td><td class="">57.8</td><td class="g0">92.2</td><td class="">42.2</td><td class="">39.1</td><td class="g0">64.1</td><td class="">51.6</td><td class="">45.3</td><td class="g0">73.4</td><td class="">70.3</td><td class="">60.9</td></tr><tr class=""><td>Flower*</td><td class="g0">947</td><td class="g0 best">100.0</td><td class="">87.5</td><td class="">87.5</td><td class="g0 best">100.0</td><td class="">54.7</td><td class="">51.6</td><td class="g0">78.1</td><td class="">78.1</td><td class="">54.7</td><td class="g0">93.8</td><td class="best">93.8</td><td class="">76.6</td></tr><tr class="ours"><td>ReStruct</td><td class="g0">571</td><td class="g0">98.4</td><td class="best">93.8</td><td class="best">92.2</td><td class="g0 best">100.0</td><td class="">81.3</td><td class="best">76.6</td><td class="g0 best">90.6</td><td class="best">84.4</td><td class="best">81.3</td><td class="g0 best">100.0</td><td class="best">93.8</td><td class="best">93.8</td></tr></tbody></table></div><!-- tables:end --></div>
     </details>
   </div>
 </section>
@@ -698,9 +805,9 @@ svg.pmm { overflow: visible; }
         <p class="lead prose">CanSorting demonstrations share a pick phase, then branch by bowl. The steered rollout picks the red can as the red-can demonstrations do, then takes the green-bowl branch that only green-can demonstrations used. Hover a video to play it.</p>
       </div>
       <div class="trip" id="cs-trip">
-        <figure data-v="cansort_base_red"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_base_red.jpg" src="media/real/cansort_base_red.mp4"></video><span class="spd">4&times;</span></div><figcaption>red can &rarr; red bowl</figcaption></figure>
-        <figure data-v="cansort_base_green"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_base_green.jpg" src="media/real/cansort_base_green.mp4"></video><span class="spd">4&times;</span></div><figcaption>green can &rarr; green bowl</figcaption></figure>
-        <figure data-v="cansort_steer_red_to_green" class="on"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_steer_red_to_green.jpg" src="media/real/cansort_steer_red_to_green.mp4"></video><span class="spd">4&times;</span></div><figcaption><b>Steered:</b> red can &rarr; green bowl</figcaption></figure>
+        <figure data-v="cansort_base_red"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_base_red.jpg" src="media/real/cansort_base_red.mp4" aria-label="Base policy on the Kinova Gen3: red can into the red bowl"></video><span class="spd">4&times;</span></div><figcaption>red can &rarr; red bowl</figcaption></figure>
+        <figure data-v="cansort_base_green"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_base_green.jpg" src="media/real/cansort_base_green.mp4" aria-label="Base policy on the Kinova Gen3: green can into the green bowl"></video><span class="spd">4&times;</span></div><figcaption>green can &rarr; green bowl</figcaption></figure>
+        <figure data-v="cansort_steer_red_to_green" class="on"><div class="vframe wide"><video muted playsinline loop preload="metadata" poster="media/real/cansort_steer_red_to_green.jpg" src="media/real/cansort_steer_red_to_green.mp4" aria-label="Steered policy on the Kinova Gen3: red can into the green bowl"></video><span class="spd">4&times;</span></div><figcaption><b>Steered:</b> red can &rarr; green bowl</figcaption></figure>
       </div>
     </div>
     <div class="reuse-b rv">
@@ -709,8 +816,35 @@ svg.pmm { overflow: visible; }
         <div class="rb-panel"><div class="chart" id="calvin-chart"></div></div>
         <div class="rb-panel calvin-graph"><svg id="calvin-graph" viewBox="0 0 440 400" role="img" aria-label="CALVIN skill graph collapsing to the requested chain"></svg></div>
       </div>
-      <p class="lead prose">On CALVIN, a requested order collapses the skill graph extracted from FLOWER rollouts into a single chain, without fine-tuning.</p>
+      <p class="lead prose">On CALVIN, a requested order collapses the skill graph extracted from FLOWER rollouts into a single chain, without fine-tuning. Averaged over four requested orders, ReStruct (571M parameters) completes all five skills in 86.0% of trials, against 50.8% for the FLOWER vision-language-action policy (947M) and 67.6% for FLOWER fine-tuned on the requested order.</p>
     </div>
+  </div>
+</section>
+
+<!-- ======================= QUESTIONS ======================= -->
+<section class="band" id="faq">
+  <div class="wrap">
+    <div class="section-head rv"><h2>Questions</h2></div>
+    <details class="abstract qa rv">
+      <summary>What is ReStruct?</summary>
+      <p class="prose">ReStruct is a zero-shot, inference-time policy steering method for robot manipulation. It turns a preference stated in plain language into an automaton and merges it into the state machine of a neural automaton policy (ENAP), so the trained visuomotor policy follows the preference without retraining.</p>
+    </details>
+    <details class="abstract qa rv">
+      <summary>How is it different from steering a VLA or a diffusion policy?</summary>
+      <p class="prose">Vision-language-action models are steered through their prompt, and diffusion policies through guidance or constraints added to sampling. Neither exposes a task structure to edit; in our experiments both keep task success but often fail to keep the preference. ReStruct edits the learned task structure directly and rebuilds each transition&rsquo;s action prior from demonstrations that satisfy the preference, while the low-level controller stays frozen.</p>
+    </details>
+    <details class="abstract qa rv">
+      <summary>Does it need retraining or new demonstrations?</summary>
+      <p class="prose">No. The network weights are unchanged and no new data is collected: the existing demonstrations that the reconfigured state machine accepts are replayed to refill its action lists.</p>
+    </details>
+    <details class="abstract qa rv">
+      <summary>Which preferences can it follow, and where are its limits?</summary>
+      <p class="prose">Preferences that can be written as LTL<sub>f</sub> formulas over the policy&rsquo;s learned symbols, which a VLM can refine (for example, splitting &ldquo;pick&rdquo; into &ldquo;pick red&rdquo; and &ldquo;pick blue&rdquo;): object-centric requests, avoidance, and orderings of subtasks. The preferred behavior must have been demonstrated, either whole or as pieces that can be recombined; eliciting new skills is not yet explored. Results also depend on the formula the VLM writes, and ReStruct applies to policies that are, or are distilled into, ENAP.</p>
+    </details>
+    <details class="abstract qa rv">
+      <summary>How does it relate to ENAP?</summary>
+      <p class="prose"><a href="https://intelligent-control-lab.github.io/ENAP-project-webpage/" target="_blank" rel="noopener">ENAP</a> (RSS 2026) learns the state machine and the residual controller from demonstrations; ReStruct is the inference-time steering layer on top of it. On CALVIN, ReStruct steers an ENAP policy distilled from the FLOWER vision-language-action model.</p>
+    </details>
   </div>
 </section>
 
@@ -718,6 +852,7 @@ svg.pmm { overflow: visible; }
 <section class="band" id="bibtex">
   <div class="wrap">
     <div class="section-head"><h2>BibTeX</h2></div>
+    <p class="note bib-note">Accepted to the Conference on Robot Learning (CoRL) 2026 &middot; <a href="https://openreview.net/forum?id=NCeeEHy8d5" target="_blank" rel="noopener">OpenReview</a> &middot; <a href="https://arxiv.org/abs/2606.26588" target="_blank" rel="noopener">arXiv:2606.26588</a></p>
     <div class="bib">
       <button type="button" class="bib-copy" id="bib-copy">Copy</button>
 <pre id="bib-text">@article{pan2026inference,
