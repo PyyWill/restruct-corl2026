@@ -43,7 +43,7 @@
       "inLanguage": "en",
       "description": "Accepted to the Conference on Robot Learning (CoRL) 2026.",
       "abstract": "A central challenge in deploying learned robot policies is inference-time behavior steering: redirecting a policy at test time to satisfy user preferences not anticipated during training, without retraining. Existing methods fail in two modes: end-to-end methods require fine-tuning or expert-level guidance, while neuro-symbolic methods rely on predefined symbols whose edits can result in logically reasonable but physically infeasible plans. To address this challenge, we propose ReStruct, which builds upon a neural automaton policy that decomposes a visuomotor policy into a high-level state-machine skeleton capturing task structure and a low-level continuous controller represented as a residual policy. Specifically, ReStruct adopts the automaton to represent the preference and incorporates it into the skeleton through a synchronous product, thereby reconfiguring the task structure. With the controller kept frozen, the action priors provided by the skeleton are updated accordingly to enable physically-aware control under a modified task structure. Extensive experiments from simulation and real-world show that ReStruct steers a wide range of preferences, from object-centric specifications to temporal-logic constraints, and after steering surpasses existing methods, exceeding VLA models in both task success and preference-following by up to 25%.",
-      "keywords": "inference-time policy steering, behavior steering, zero-shot, robot manipulation, neuro-symbolic learning, state machine, linear temporal logic (LTLf), natural-language preferences, vision-language-action (VLA) baselines, CoRL 2026",
+      "keywords": "inference-time policy steering, behavior steering, zero-shot, robot manipulation, neuro-symbolic learning, state machine, linear temporal logic (LTLf), formal methods, automata-theoretic product (DFA), natural-language preferences, vision-language-action (VLA) baselines, CoRL 2026",
       "identifier": { "@type": "PropertyValue", "propertyID": "arXiv", "value": "2606.26588" },
       "sameAs": ["https://arxiv.org/abs/2606.26588", "https://openreview.net/forum?id=NCeeEHy8d5"],
       "url": "https://pyywill.github.io/restruct-corl2026/",
@@ -704,7 +704,7 @@ svg.pmm { overflow: visible; }
   <div class="wrap">
     <div class="section-head rv">
       <h2>Three steps, one frozen controller</h2>
-      <p class="prose">ReStruct builds on ENAP, a neuro-symbolic policy that pairs a learned state machine with a small action network. Steering changes only the state machine and the action lists on its edges; the controller stays frozen.</p>
+      <p class="prose">ReStruct builds on ENAP, a neuro-symbolic policy that pairs a learned state machine with a small action network. Steering is a standard construction from formal methods: the preference becomes an LTL<sub>f</sub> formula and its automaton, whose synchronous product with the state machine keeps only the transitions the formula allows. Only the state machine and the action lists on its edges change; the controller stays frozen.</p>
     </div>
     <div class="seg fig-tabs rv" role="group" aria-label="Method stage" id="fig3-tabs">
       <button type="button" aria-pressed="true">Overview</button>
@@ -844,6 +844,10 @@ svg.pmm { overflow: visible; }
     <details class="abstract qa rv">
       <summary>Does it need retraining or new demonstrations?</summary>
       <p class="prose">No. The network weights are unchanged and no new data is collected: the existing demonstrations that the reconfigured state machine accepts are replayed to refill its action lists.</p>
+    </details>
+    <details class="abstract qa rv">
+      <summary>Does ReStruct guarantee that the preference is satisfied?</summary>
+      <p class="prose">At the level of the learned state machine, yes, by construction: the steered machine <span class="math">&#x2133;<sub>2</sub></span> = <span class="math">&#x2133;<sub>1</sub></span> &otimes; A, the synchronous product of the policy&rsquo;s state machine with the preference automaton, keeps only the transitions the LTL<sub>f</sub> formula allows, and replay keeps only demonstrations whose symbol sequences the automaton accepts. Whether the physical execution satisfies the preference also depends on how well the learned symbols and the VLM-written formula capture it, so that part is measured in experiments (SRP in the tables), not proven.</p>
     </details>
     <details class="abstract qa rv">
       <summary>Which preferences can it follow, and where are its limits?</summary>
